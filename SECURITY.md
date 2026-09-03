@@ -21,6 +21,24 @@ directory. Problems worth reporting include:
 - an agent invocation that grants broader permissions than documented
   (`acceptEdits` on Claude, `workspace-write` on Codex, `auto_edit` on Gemini)
 
+## Passing cookies
+
+`--cookies-from-browser` and `--cookies` hand yt-dlp a real session. A YouTube
+cookie is your Google account: treat it as a password, not as configuration.
+
+- **Prefer `--cookies-from-browser`.** It reads the browser's store for that one
+  request and writes nothing. On macOS the browser will ask for Keychain
+  access — that prompt is expected.
+- **A `cookies.txt` is a live credential on disk.** It is git-ignored here, but
+  it is still a file anyone with read access to that directory can use. Delete
+  it when you are done, and never commit or share one.
+- **Mind the agent.** `--claude`, `--codex` and `--gemini` run an agent with
+  write permission in the working directory, so anything readable there is
+  readable by it. That is one more reason not to leave a `cookies.txt` beside
+  your vaults.
+- The cookies are passed to yt-dlp as arguments and never written to the vault,
+  the logs or `meta.json`.
+
 ## What is out of scope
 
 - Vulnerabilities in `ffmpeg`, `whisper.cpp` or `yt-dlp` themselves — report

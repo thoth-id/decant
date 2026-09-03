@@ -32,3 +32,7 @@ Thumbs.db
 
 # Generated
 vaults
+
+# Session cookies: a cookies.txt is a live credential, not a config file
+cookies.txt
+*.cookies.txt
