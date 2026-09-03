@@ -1,0 +1,27 @@
+{
+  "name": "@thoth-dev/decant",
+  "version": "0.1.0",
+  "module": "src/cli.ts",
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "typescript": "^5.7.0"
+  },
+  "bin": {
+    "decant": "./src/cli.ts"
+  },
+  "description": "Turns video lessons into study documents: transcribes locally, captures the essential frames and assembles a package ready for AI analysis.",
+  "engines": {
+    "bun": ">=1.2.0"
+  },
+  "scripts": {
+    "decant": "bun run src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "analyze": "bun run src/analyze.ts",
+    "view": "bun run src/view.ts",
+    "credits": "bun run src/credits.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "marked": "^18.0.11"
+  }
+}
