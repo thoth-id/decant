@@ -6,6 +6,21 @@ Notable changes to this project. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `--cookies-from-browser <name>` and `--cookies <file>`, passed through to
+  yt-dlp for both the metadata query and the download, and accepted by
+  `decant credits` too. YouTube refuses signed-out requests for public videos
+  with a bot check; the way through is the session you already have, not a way
+  around any protection.
+
+### Fixed
+
+- The failure message for a URL no longer explains every yt-dlp error as DRM.
+  A bot check now says what it is and names the flag that solves it, instead of
+  sending you to look for a local copy of a video you can simply sign in to
+  watch.
+
 ## [0.1.0] — 2026-09-03
 
 First release.

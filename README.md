@@ -170,6 +170,14 @@ bun run decant "https://www.youtube.com/watch?v=..."
 bun run decant ./modulo.mp4 --model large --frames 60 --sens 6
 ```
 
+**YouTube may answer with a bot check** — `Sign in to confirm you're not a bot`
+— even for public videos, when the request has no session. That is not DRM and
+there is nothing to work around: hand it the session you already have.
+
+```bash
+bun run decant "https://youtu.be/..." --cookies-from-browser chrome
+```
+
 Then comes the analysis. Either you ask for it in Claude Code:
 
 ```
@@ -314,6 +322,8 @@ bun run decant ./aula-01.mp4 --claude --view
 | `--width` | `1280` | Width of the captures in pixels |
 | `--name` | — | Name of the output vault |
 | `--keep-media` | — | Keeps the raw video and audio |
+| `--cookies-from-browser <name>` | — | `chrome`, `safari`, `firefox`, `edge`, `brave` — when the platform asks who is asking |
+| `--cookies <file>` | — | Same, from a `cookies.txt` file |
 | `--claude` / `--codex` / `--gemini` | — | Analyses and writes the `NOTES.md` at the end |
 | `--agent <name>` | — | `claude`, `codex`, `gemini` or `auto` |
 | `--view` | — | Renders the `NOTES.md` and opens it in the browser at the end |
