@@ -69,3 +69,8 @@ will be closed.
 
 Short, imperative subject lines describing what the change does. Keep unrelated
 changes in separate commits.
+
+## Releasing
+
+For maintainers: [RELEASING.md](RELEASING.md) covers the one-time npm setup and
+the two commands that cut a version.
