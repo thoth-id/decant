@@ -1,27 +1,53 @@
 {
   "name": "@thoth-dev/decant",
   "version": "0.1.0",
-  "module": "src/cli.ts",
-  "devDependencies": {
-    "@types/bun": "^1.2.0",
-    "typescript": "^5.7.0"
+  "description": "Turns video lessons into study documents: transcribes locally, captures the essential frames and assembles a package ready for AI analysis.",
+  "keywords": [
+    "cli",
+    "video",
+    "transcription",
+    "whisper",
+    "ffmpeg",
+    "study-notes",
+    "bun"
+  ],
+  "homepage": "https://github.com/thoth-id/decant#readme",
+  "bugs": "https://github.com/thoth-id/decant/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thoth-id/decant.git"
   },
+  "license": "MIT",
+  "author": "Geison Oriani",
+  "type": "module",
+  "module": "src/cli.ts",
   "bin": {
     "decant": "./src/cli.ts"
   },
-  "description": "Turns video lessons into study documents: transcribes locally, captures the essential frames and assembles a package ready for AI analysis.",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "engines": {
     "bun": ">=1.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "decant": "bun run src/cli.ts",
     "typecheck": "tsc --noEmit",
     "analyze": "bun run src/analyze.ts",
     "view": "bun run src/view.ts",
-    "credits": "bun run src/credits.ts"
+    "credits": "bun run src/credits.ts",
+    "prepublishOnly": "bun run typecheck"
   },
-  "type": "module",
   "dependencies": {
     "marked": "^18.0.11"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "typescript": "^5.7.0"
   }
 }

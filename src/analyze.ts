@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { NoAgentsError, parseAgentFlag, validateAgentId } from "./lib/agents.ts";
 import {
-  displayPath, fail, helpOrExit, parseOptions, REPO_ROOT, reportFailure, resolveVault, runAnalysis,
+  displayPath, fail, helpOrExit, parseOptions, WORK_DIR, reportFailure, resolveVault, runAnalysis,
 } from "./lib/cli.ts";
 
 const HELP = `
@@ -38,7 +38,7 @@ const dir = resolveVault(vault, "transcript.md", "Generate a vault with: bun run
 
 // The agent runs from the repository root, so that is the path it understands;
 // a vault outside the repo would produce "../../.." and goes absolute instead.
-const rel = displayPath(dir, REPO_ROOT);
+const rel = displayPath(dir, WORK_DIR);
 
 try {
   if (!(await runAnalysis(agent, dir, rel, (m) => console.error(`\x1b[2m${m}\x1b[0m`)))) {

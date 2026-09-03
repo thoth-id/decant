@@ -7,11 +7,16 @@ import { notesExists, resolve as resolveAgent, runAgent } from "./agents.ts";
 import { renderPage } from "./page.ts";
 import { has, run } from "./shell.ts";
 
-/** Repository root: the entrypoints sit in `<root>/src`, this module one level deeper. */
-export const REPO_ROOT = resolvePath(import.meta.dir, "..", "..");
+/**
+ * Where vaults are created, and what paths are shown relative to: the directory
+ * the command was run from, never where the code lives. Installed globally the
+ * package sits inside node_modules — writing vaults there would need root on a
+ * global install, and the next update would wipe them.
+ */
+export const WORK_DIR = process.cwd();
 
 /** Where the vaults are created and looked for. */
-export const VAULTS_DIR = join(REPO_ROOT, "vaults");
+export const VAULTS_DIR = join(WORK_DIR, "vaults");
 
 /**
  * The logo at the top of a run. Goes to stderr, beside the progress log, so a

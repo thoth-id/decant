@@ -9,7 +9,7 @@ import { writeBrief } from "./lib/brief.ts";
 import { stamp } from "./lib/time.ts";
 import {
   displayPath, fail, header, helpOrExit, openInBrowser, parseOptions, renderToFile,
-  REPO_ROOT, reportFailure, requireBinaries, runAnalysis, VAULTS_DIR,
+  WORK_DIR, reportFailure, requireBinaries, runAnalysis, VAULTS_DIR,
 } from "./lib/cli.ts";
 import { installed, parseAgentFlag, validateAgentId } from "./lib/agents.ts";
 
@@ -157,7 +157,7 @@ async function main() {
   const claimVault = (title: string): string => {
     const dir = join(VAULTS_DIR, slugify(args.name ?? title));
     if (existsSync(dir) && !args.force) {
-      const rel = displayPath(dir, REPO_ROOT);
+      const rel = displayPath(dir, WORK_DIR);
       throw new Error(
         `a vault already exists at ${rel}\n\n` +
         `  re-analyse without reprocessing the video:  bun run analyze ${rel} --claude\n` +
@@ -202,7 +202,7 @@ async function main() {
 
     // 3. Assemble the package that feeds the analysis.
     log("assembling the analysis package...");
-    const rel = displayPath(vaultDir, REPO_ROOT);
+    const rel = displayPath(vaultDir, WORK_DIR);
     await writeBrief({ vaultDir, vaultRel: rel, source, segments, frames, language });
 
     if (args.keepMedia) {
