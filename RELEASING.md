@@ -33,6 +33,24 @@ npm publish --dry-run   # read the file list before it is permanent
 npm publish
 ```
 
+Then tag and release **by hand**, without pushing the tag first. Pushing
+`v0.1.0` would fire the release workflow, which would try to publish a version
+npm already has and fail:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0 --no-verify   # the workflow will run and fail on publish
+```
+
+Simpler: skip the tag push and create both at once, which tags the current
+commit remotely without triggering a push event:
+
+```bash
+gh release create v0.1.0 --generate-notes --target main
+```
+
+From 0.2.0 on, the tag does everything — see below.
+
 ### 4. Configure trusted publishing
 
 On the package page → **Settings** → **Trusted Publisher**, point it at this
