@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
 
+# Nothing here writes anything. The repository default is already read-only,
+# but stating it keeps this job restricted if that default ever changes.
+permissions:
+  contents: read
+
 jobs:
   typecheck:
     runs-on: ubuntu-latest
