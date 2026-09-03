@@ -178,6 +178,13 @@ there is nothing to work around: hand it the session you already have.
 bun run decant "https://youtu.be/..." --cookies-from-browser chrome
 ```
 
+**Weigh this before you use it.** Cookies attach the request to your account
+instead of leaving it anonymous, and downloading from YouTube is against their
+terms either way — signed in, it becomes attributable. Accounts being
+challenged or suspended after heavy automated use is a recurring report in the
+yt-dlp community. If you go this route, a secondary account is the sensible
+place to do it, not the one your email lives in.
+
 Then comes the analysis. Either you ask for it in Claude Code:
 
 ```

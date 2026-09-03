@@ -26,6 +26,11 @@ directory. Problems worth reporting include:
 `--cookies-from-browser` and `--cookies` hand yt-dlp a real session. A YouTube
 cookie is your Google account: treat it as a password, not as configuration.
 
+- **The account carries the risk, not just the file.** Cookies attach automated
+  requests to your account rather than to an anonymous IP, and downloading is
+  against YouTube's terms regardless — signed in, it is attributable to you.
+  Suspensions after heavy use are reported often enough in the yt-dlp community
+  to take seriously. Use a secondary account, not your main one.
 - **Prefer `--cookies-from-browser`.** It reads the browser's store for that one
   request and writes nothing. On macOS the browser will ask for Keychain
   access — that prompt is expected.
