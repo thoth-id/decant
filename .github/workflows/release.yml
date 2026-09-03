@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write  # create the GitHub Release
+  id-token: write  # npm trusted publishing (OIDC), so no NPM_TOKEN is stored
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs a recent npm; the one bundled with Node is older.
+      - run: npm install -g npm@latest
+
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+
+      # A tag that disagrees with package.json publishes the wrong version under
+      # the right name, and npm versions cannot be replaced. Stop before that.
+      - name: The tag must match package.json
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg=$(node -p "require('./package.json').version")
+          if [ "$tag" != "$pkg" ]; then
+            echo "tag says $tag, package.json says $pkg"
+            exit 1
+          fi
+
+      - run: npm publish
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes
