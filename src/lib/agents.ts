@@ -81,10 +81,11 @@ export function resolve(id: string): AgentSpec {
 }
 
 /**
- * The instruction handed to the agent. The full rules live in AGENTS.md, which
- * Claude Code and Codex discover on their own and Gemini reaches through
- * `.gemini/settings.json`. The essentials are repeated here on purpose, so the
- * prompt still works if the CLI does not load a convention file.
+ * The instruction handed to the agent. It has to stand on its own: installed
+ * from npm the tool runs in a directory that has no AGENTS.md, so a prompt that
+ * delegated the rules to that file would lose them exactly where most people
+ * run it. AGENTS.md still carries the long form, for work inside a clone, and
+ * the agents that find it get the fuller version.
  *
  * The NOTES.md itself is written in Brazilian Portuguese: it is the deliverable
  * the reader studies from, not part of the codebase.
@@ -92,7 +93,8 @@ export function resolve(id: string): AgentSpec {
 function buildPrompt(vaultRel: string): string {
   const slug = basename(vaultRel);
   return [
-    `Read the analysis instructions in AGENTS.md (section "Writing the NOTES.md") and carry them out for the vault \`${vaultRel}\`.`,
+    `Write a study document from the vault \`${vaultRel}\`.`,
+    `If an AGENTS.md is present, its "Writing the NOTES.md" section applies in full; everything essential is repeated below either way.`,
     ``,
     `Inputs: \`${vaultRel}/BRIEF.md\`, \`${vaultRel}/transcript.md\`, \`${vaultRel}/meta.json\` and the images in \`${vaultRel}/frames/\`.`,
     `Output: write \`${vaultRel}/NOTES.md\`.`,
@@ -103,6 +105,12 @@ function buildPrompt(vaultRel: string): string {
     `Anchor the points with timestamps; if meta.json has a YouTube "url", use clickable links.`,
     `Embed frames with \`![description](frames/file.jpg)\` only where the image adds something.`,
     `Write the document in Brazilian Portuguese, with correct spelling and accents, and end it with a "Resumo pratico".`,
+    `Open with a title and 2-3 lines saying what the lesson covers and who it serves. Order the sections by subject, in didactic order — not necessarily the video's order.`,
+    `Give every code block a language: \`\`\`sql, \`\`\`ts, \`\`\`bash.`,
+    `Discard greetings, requests for likes and subscriptions, digressions, repetitions and speech corrections.`,
+    `Do not pad. A 10-minute lesson that teaches three things becomes a short document — that is success, not failure.`,
+    `Do not invent. If something was inaudible or ambiguous, write \`_[inaudivel ~12:30]_\` instead of guessing.`,
+    `If the video is not didactic — nothing is being taught — say so instead of forcing a course document out of it.`,
     ``,
     `CREDITS — mandatory:`,
     `1. Read \`${vaultRel}/CREDITS.md\`. End the NOTES.md with a "## Creditos" section`,
