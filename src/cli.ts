@@ -175,6 +175,10 @@ async function main() {
 
   const staging = join(VAULTS_DIR, ".staging");
 
+  // Declared out here so the finally can wipe it. It holds the extracted audio,
+  // which is the largest thing this ever writes.
+  let workDir = "";
+
   /**
    * Decides the destination vault and refuses to collide with an existing one.
    *
@@ -218,7 +222,7 @@ async function main() {
     // Now that the title is known, the vault gets its final name.
     const vaultDir = claimVault(source.title);
     if (args.force) await rm(vaultDir, { recursive: true, force: true });
-    const workDir = join(vaultDir, ".work");
+    workDir = join(vaultDir, ".work");
     await mkdir(workDir, { recursive: true });
 
     // 2. Transcription and frame capture are independent: they run together.
@@ -241,8 +245,6 @@ async function main() {
       // A downloaded video lives in staging, which the finally block wipes.
       if (source.videoPath.startsWith(staging)) await moveInto(media, source.videoPath);
     }
-    await rm(workDir, { recursive: true, force: true });
-
     console.log(`
 \x1b[32mvault ready in ${elapsed()}\x1b[0m — \x1b[1m${rel}\x1b[0m
   ${segments.length} segments · ${frames.length} frames
@@ -269,7 +271,11 @@ Or make it automatic next time: ${flags}
     // leave the downloaded video behind in staging.
     process.exitCode = 1;
   } finally {
+    // Both paths, not just the happy one: an interrupted run used to leave the
+    // extracted audio behind — 26MB for a short lesson — inside a half-built
+    // vault that then refused to be rebuilt without --force.
     await rm(staging, { recursive: true, force: true });
+    if (workDir) await rm(workDir, { recursive: true, force: true });
   }
 }
 
