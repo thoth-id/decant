@@ -20,10 +20,10 @@ First release.
 - Automatic analysis with `--claude`, `--codex` or `--gemini`, each running
   under that CLI's own subscription. Claude Code is tested end to end; Gemini
   is written but was not validated.
-- `analyze` rewrites the `NOTES.md` of an existing vault without reprocessing
+- `decant analyze` rewrites the `NOTES.md` of an existing vault without reprocessing
   the video.
-- `credits` re-queries the source to rebuild `CREDITS.md` and `RESOURCES.md`.
-- `view` renders a vault document as an HTML page, with `--standalone` to embed
+- `decant credits` re-queries the source to rebuild `CREDITS.md` and `RESOURCES.md`.
+- `decant view` renders a vault document as an HTML page, with `--standalone` to embed
   the images into a single file.
 - `AGENTS.md` as the only instructions file, discovered natively by Claude Code
   and Codex, and reached by Gemini through `.gemini/settings.json`.

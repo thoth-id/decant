@@ -20,7 +20,7 @@ language of the audience studying from them.
 ```bash
 bun run decant <url-or-file>               # creates vaults/<slug>/ with BRIEF.md
 bun run decant <url-or-file> --claude      # and writes the NOTES.md too
-bun run analyze vaults/<slug> --claude # analysis only, no video reprocessing
+bun run decant analyze vaults/<slug> --claude # analysis only, no video reprocessing
 ```
 
 ## Writing the NOTES.md

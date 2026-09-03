@@ -91,11 +91,27 @@ winget install -e --id yt-dlp.yt-dlp
 There is no runtime npm dependency beyond `marked`, used to render the markdown.
 Everything else is a system binary.
 
-### Installing the project
+### Installing decant
+
+As a command, from npm:
 
 ```bash
-bun install
+bun add -g @thoth-dev/decant
+decant --help
 ```
+
+Or from a clone, to work on it:
+
+```bash
+git clone https://github.com/thoth-id/decant.git
+cd decant
+bun install
+bun run decant --help
+```
+
+The examples below use `bun run decant`, the form that works in a clone.
+Installed from npm the command is just `decant` — the CLI's own messages adapt
+to whichever way you are running it.
 
 ### Agents (optional)
 
@@ -133,6 +149,15 @@ Processing happens entirely on your machine. No audio or video leaves the
 computer — important for paid course content.
 
 ## Usage
+
+One command with four jobs:
+
+| Command | What it does |
+|---|---|
+| `decant <url-or-file>` | processes a video into a vault |
+| `decant view <vault>` | renders a document and opens it in the browser |
+| `decant analyze <vault>` | rewrites the `NOTES.md` without reprocessing the video |
+| `decant credits <vault>` | rebuilds `CREDITS.md` and `RESOURCES.md` from the source |
 
 ```bash
 # local file
@@ -181,8 +206,8 @@ with permission to write files in the working directory, and nothing beyond that
 To rewrite the `NOTES.md` of an existing vault without reprocessing the video:
 
 ```bash
-bun run analyze vaults/aula-01 --claude
-bun run analyze vaults/aula-01 --gemini   # same vault, different agent
+bun run decant analyze vaults/aula-01 --claude
+bun run decant analyze vaults/aula-01 --gemini   # same vault, different agent
 ```
 
 ### Instructions: a single file
@@ -243,8 +268,8 @@ name and the timestamp instead of guessing the address.
 For older vaults, or when the video description has changed:
 
 ```bash
-bun run credits vaults/aula-01            # re-queries the source (no video download)
-bun run credits vaults/aula-01 --offline  # only with what is already in meta.json
+bun run decant credits vaults/aula-01            # re-queries the source (no video download)
+bun run decant credits vaults/aula-01 --offline  # only with what is already in meta.json
 ```
 
 A local video file has no platform metadata: in that case `CREDITS.md` comes out
@@ -256,9 +281,9 @@ The `NOTES.md` is markdown with screenshots and timestamps — good in the edito
 better in the browser:
 
 ```bash
-bun run view vaults/aula-01               # renders and opens
-bun run view vaults/aula-01 --standalone  # single file, to send to someone
-bun run view vaults/aula-01 --file BRIEF.md
+bun run decant view vaults/aula-01               # renders and opens
+bun run decant view vaults/aula-01 --standalone  # single file, to send to someone
+bun run decant view vaults/aula-01 --file BRIEF.md
 ```
 
 Without `--standalone` the HTML stays around ~15KB and points at `frames/` next
@@ -337,7 +362,7 @@ To share a document with the captures embedded, generate the single file instead
 of versioning them:
 
 ```bash
-bun run view vaults/aula-01 --standalone
+bun run decant view vaults/aula-01 --standalone
 ```
 
 ## How it works

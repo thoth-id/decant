@@ -13,6 +13,14 @@ import { has, run } from "./shell.ts";
  * package sits inside node_modules — writing vaults there would need root on a
  * global install, and the next update would wipe them.
  */
+/**
+ * How to spell this command back to the user. Installed from npm the package
+ * sits under node_modules and is reached by its bin name; run from a clone it
+ * goes through `bun run`. Messages that hardcode either one teach a command
+ * that does not exist for half the audience.
+ */
+export const CMD = import.meta.dir.includes("node_modules") ? "decant" : "bun run decant";
+
 export const WORK_DIR = process.cwd();
 
 /** Where the vaults are created and looked for. */

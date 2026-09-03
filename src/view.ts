@@ -2,14 +2,14 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import {
-  displayPath, fail, helpOrExit, openInBrowser, parseOptions, renderToFile, resolveVault,
+  CMD, displayPath, fail, helpOrExit, openInBrowser, parseOptions, renderToFile, resolveVault,
 } from "./lib/cli.ts";
 
 const HELP = `
 view — renders a vault's document and opens it in the browser
 
 USAGE
-  bun run view <vault> [options]
+  ${CMD} view <vault> [options]
 
 OPTIONS
   --file <name>   markdown to render           (default: NOTES.md)
@@ -18,9 +18,9 @@ OPTIONS
   -h, --help      this help
 
 EXAMPLES
-  bun run view vaults/minha-aula
-  bun run view vaults/minha-aula --file BRIEF.md
-  bun run view vaults/minha-aula --standalone   # to send to someone
+  ${CMD} view vaults/minha-aula
+  ${CMD} view vaults/minha-aula --file BRIEF.md
+  ${CMD} view vaults/minha-aula --standalone   # to send to someone
 `;
 
 const argv = process.argv.slice(2);
@@ -43,7 +43,7 @@ if (!vault) fail("give the vault directory");
 
 // Vault already processed but not yet analysed: point the way to producing it.
 const hint = file === "NOTES.md" && existsSync(join(vault, "BRIEF.md"))
-  ? `The vault has no NOTES.md yet. Generate the analysis with:\n  bun run analyze ${vault} --claude\n\nOr look at the raw package:\n  bun run view ${vault} --file BRIEF.md`
+  ? `The vault has no NOTES.md yet. Generate the analysis with:\n  ${CMD} analyze ${vault} --claude\n\nOr look at the raw package:\n  ${CMD} view ${vault} --file BRIEF.md`
   : "";
 const dir = resolveVault(vault, file, hint);
 

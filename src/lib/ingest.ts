@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { basename, extname, join, resolve } from "node:path";
 import type { AttributionSource } from "./credits.ts";
 import type { Chapter } from "./resources.ts";
+import { CMD } from "./cli.ts";
 import { firstLine, run } from "./shell.ts";
 
 /** Everything the platform told us, plus the local file it resolved to. */
@@ -83,7 +84,7 @@ async function fromUrl(url: string, workDir: string, log: (m: string) => void, o
       `could not read that URL.\n\n` +
       `Paid course platforms usually rely on DRM or require an authenticated session, and this tool ` +
       `works around neither. In that case, use a local file you have the right to access:\n` +
-      `  bun run decant ./aula.mp4\n\nTechnical detail: ${firstLine(err)}`,
+      `  ${CMD} ./aula.mp4\n\nTechnical detail: ${firstLine(err)}`,
     );
   }
 

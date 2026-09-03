@@ -39,9 +39,6 @@
   "scripts": {
     "decant": "bun run src/cli.ts",
     "typecheck": "tsc --noEmit",
-    "analyze": "bun run src/analyze.ts",
-    "view": "bun run src/view.ts",
-    "credits": "bun run src/credits.ts",
     "prepublishOnly": "bun run typecheck"
   },
   "dependencies": {

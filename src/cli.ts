@@ -8,16 +8,38 @@ import { extractFrames, DEFAULT_FRAME_OPTIONS, type FrameOptions } from "./lib/f
 import { writeBrief } from "./lib/brief.ts";
 import { stamp } from "./lib/time.ts";
 import {
-  displayPath, fail, header, helpOrExit, openInBrowser, parseOptions, renderToFile,
+  CMD, displayPath, fail, header, helpOrExit, openInBrowser, parseOptions, renderToFile,
   WORK_DIR, reportFailure, requireBinaries, runAnalysis, VAULTS_DIR,
 } from "./lib/cli.ts";
 import { installed, parseAgentFlag, validateAgentId } from "./lib/agents.ts";
+
+/**
+ * The subcommands are separate entrypoints that do their work on import. Taking
+ * the name out of argv and importing the module hands it exactly the arguments
+ * it already knows how to parse, with no wrapper to keep in sync.
+ */
+const SUBCOMMANDS: Record<string, string> = {
+  view: "./view.ts",
+  analyze: "./analyze.ts",
+  credits: "./credits.ts",
+};
+
+const subcommand = SUBCOMMANDS[process.argv[2] ?? ""];
+if (subcommand) process.argv.splice(2, 1);
 
 const HELP = `
 decant — turns video lessons into study material
 
 USAGE
-  bun run decant <url-or-file> [options]
+  ${CMD} <url-or-file> [options]
+
+COMMANDS
+  ${CMD} <url-or-file>     process a video into a vault (the default)
+  ${CMD} view <vault>      render a document and open it in the browser
+  ${CMD} analyze <vault>   rewrite the NOTES.md without reprocessing the video
+  ${CMD} credits <vault>   rebuild CREDITS.md and RESOURCES.md from the source
+
+  Each takes -h for its own options.
 
 OPTIONS
   --model <name>    small | medium | turbo | large        (default: turbo)
@@ -44,11 +66,11 @@ AUTOMATIC ANALYSIS
   --view            renders the NOTES.md and opens it in the browser at the end
 
 EXAMPLES
-  bun run decant ./aula-01.mp4
-  bun run decant "https://youtube.com/watch?v=..." --lang pt
-  bun run decant ./modulo.mp4 --model large --frames 60 --sens 6
-  bun run decant ./aula.mp4 --claude
-  bun run decant "https://youtu.be/..." --agent auto
+  ${CMD} ./aula-01.mp4
+  ${CMD} "https://youtube.com/watch?v=..." --lang pt
+  ${CMD} ./modulo.mp4 --model large --frames 60 --sens 6
+  ${CMD} ./aula.mp4 --claude
+  ${CMD} "https://youtu.be/..." --agent auto
 
 Sources with DRM or an authenticated session are not supported by design.
 For paid-platform content, use a local file you have the right to access.
@@ -160,9 +182,9 @@ async function main() {
       const rel = displayPath(dir, WORK_DIR);
       throw new Error(
         `a vault already exists at ${rel}\n\n` +
-        `  re-analyse without reprocessing the video:  bun run analyze ${rel} --claude\n` +
-        `  generate a sibling under another name:      bun run decant <source> --name <slug>\n` +
-        `  discard the previous one and redo it:       bun run decant <source> --force\n\n` +
+        `  re-analyse without reprocessing the video:  ${CMD} analyze ${rel} --claude\n` +
+        `  generate a sibling under another name:      ${CMD} <source> --name <slug>\n` +
+        `  discard the previous one and redo it:       ${CMD} <source> --force\n\n` +
         `\x1b[2m--force deletes the whole vault, NOTES.md and collected credits included.\x1b[0m`,
       );
     }
@@ -244,4 +266,8 @@ Or make it automatic next time: ${flags}
   }
 }
 
-main();
+if (subcommand) {
+  await import(subcommand);
+} else {
+  await main();
+}
