@@ -2,7 +2,7 @@
 import { existsSync } from "node:fs";
 import { mkdir, rename, rm } from "node:fs/promises";
 import { basename, join } from "node:path";
-import { ingest, isUrl, slugify } from "./lib/ingest.ts";
+import { ingest, isUrl, slugify, type CookieSource } from "./lib/ingest.ts";
 import { ensureModel, extractAudio, transcribe, MODELS, type ModelName } from "./lib/transcribe.ts";
 import { extractFrames, DEFAULT_FRAME_OPTIONS, type FrameOptions } from "./lib/frames.ts";
 import { writeBrief } from "./lib/brief.ts";
@@ -52,6 +52,10 @@ OPTIONS
   --name <slug>     name of the output vault
   --force           replaces an existing vault, deleting the previous one
   --keep-media      keeps the raw video and audio
+  --cookies-from-browser <name>
+                    chrome | safari | firefox | edge | brave — for a platform
+                    that asks who is asking (YouTube's bot check)
+  --cookies <file>  same, from a cookies.txt file
   -h, --help        this help
 
 AUTOMATIC ANALYSIS
@@ -86,6 +90,7 @@ interface Args {
   keepMedia: boolean;
   agent?: string;
   view: boolean;
+  cookies?: CookieSource;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -117,6 +122,8 @@ function parseArgs(argv: string[]): Args {
       case "--name": args.name = next(); return true;
       case "--force": args.force = true; return true;
       case "--keep-media": args.keepMedia = true; return true;
+      case "--cookies-from-browser": args.cookies = { fromBrowser: next() }; return true;
+      case "--cookies": args.cookies = { file: next() }; return true;
       case "--agent": args.agent = next(); return true;
       case "--view": args.view = true; return true;
       default: {
@@ -205,7 +212,7 @@ async function main() {
 
     // 1. Resolve the source into a local file with metadata. The check runs
     //    again as soon as the title shows up, still before the download.
-    const source = await ingest(args.input, staging, log, claimVault);
+    const source = await ingest(args.input, staging, log, claimVault, args.cookies);
     log(`"${source.title}" — ${stamp(source.duration)}`);
 
     // Now that the title is known, the vault gets its final name.

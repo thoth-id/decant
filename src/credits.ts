@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { fetchSourceInfo } from "./lib/ingest.ts";
+import { fetchSourceInfo, type CookieSource } from "./lib/ingest.ts";
 import { buildCredits, writeAttribution, type Credits } from "./lib/credits.ts";
 import { isMaterial, type Chapter } from "./lib/resources.ts";
 import { CMD, displayPath, fail, helpOrExit, parseOptions, resolveVault } from "./lib/cli.ts";
@@ -10,7 +10,7 @@ const HELP = `
 credits — (re)generates a vault's CREDITS.md
 
 USAGE
-  ${CMD} credits <vault> [--offline]
+  ${CMD} credits <vault> [--offline] [--cookies-from-browser <name>]
 
 Queries the source platform to recover authorship, date, license and the links
 in the description. Does not download video. With --offline, uses only what is
@@ -25,10 +25,14 @@ const argv = process.argv.slice(2);
 helpOrExit(argv, HELP);
 
 let offline = false;
-const vault = parseOptions(argv, "vault", (arg) => {
-  if (arg !== "--offline") return false;
-  offline = true;
-  return true;
+let cookies: CookieSource | undefined;
+const vault = parseOptions(argv, "vault", (arg, next) => {
+  switch (arg) {
+    case "--offline": offline = true; return true;
+    case "--cookies-from-browser": cookies = { fromBrowser: next() }; return true;
+    case "--cookies": cookies = { file: next() }; return true;
+    default: return false;
+  }
 });
 if (!vault) fail("give the vault directory");
 
@@ -48,7 +52,7 @@ if (!meta.url) {
   if (!has("yt-dlp")) fail("`yt-dlp` is not in PATH — use --offline");
   console.error(`\x1b[2mquerying the source…\x1b[0m`);
   try {
-    const info = await fetchSourceInfo(meta.url);
+    const info = await fetchSourceInfo(meta.url, cookies);
     credits = buildCredits(info);
     chapters = info.chapters ?? [];
   } catch (err) {
