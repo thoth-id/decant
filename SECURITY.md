@@ -28,5 +28,7 @@ directory. Problems worth reporting include:
 - The fact that the tool does not work around DRM or authentication. That is
   deliberate, and reports asking for it will be closed.
 - Content processed by the tool staying on your machine is the design; there is
-  no server, no telemetry and no network call beyond `yt-dlp` fetching a public
-  video and the one-time model download.
+  no server and no telemetry. The network is touched in exactly three places:
+  `yt-dlp` fetching a public video, the one-time Whisper model download, and the
+  rendered HTML page loading its typefaces from Google Fonts — that last one at
+  reading time, in the reader's browser, never while a video is processed.

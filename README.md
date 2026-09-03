@@ -14,7 +14,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Bun](https://img.shields.io/badge/bun-%3E%3D1.2-f9f1e1.svg?logo=bun&logoColor=white&labelColor=14151a)](https://bun.sh)
-[![Runs locally](https://img.shields.io/badge/runs-100%25%20locally-2ea44f.svg)](#requirements)
+[![Processing: 100% local](https://img.shields.io/badge/processing-100%25%20local-2ea44f.svg)](#requirements)
 
 Turns video lessons into study documents. Transcribes locally, captures the
 frames that matter and assembles a package the AI reads to write the material —
@@ -129,8 +129,8 @@ end to end — reports from the others are welcome.
 **Tested on:** macOS 15 (Apple M2 Pro) · Bun 1.4.0 · ffmpeg 9.0.1 ·
 whisper.cpp via `whisper-cpp` · yt-dlp 2026.08.19.
 
-Everything runs on your machine. No audio or video leaves the computer —
-important for paid course content.
+Processing happens entirely on your machine. No audio or video leaves the
+computer — important for paid course content.
 
 ## Usage
 
