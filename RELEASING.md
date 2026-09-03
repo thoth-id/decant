@@ -53,10 +53,25 @@ From 0.2.0 on, the tag does everything — see below.
 
 ### 4. Configure trusted publishing
 
-On the package page → **Settings** → **Trusted Publisher**, point it at this
-repository and the `release.yml` workflow. This is what lets the workflow
-publish without an `NPM_TOKEN` stored in the repository — GitHub proves the
-workflow's identity through OIDC, and there is no long-lived secret to leak.
+On the package page → **Settings** → **Trusted Publisher**, fill in:
+
+| Field | Value |
+|---|---|
+| Publisher | GitHub Actions |
+| Organization or user | `thoth-id` — the **GitHub** org, not the npm scope |
+| Repository | `decant` |
+| Workflow filename | `release.yml` |
+| Environment name | *leave empty* — the workflow declares no environment, and a name here would make OIDC fail |
+| Allow `npm publish` | **leave unchecked** |
+
+This is what lets the workflow publish without an `NPM_TOKEN` in the repository:
+GitHub proves the workflow's identity through OIDC, so there is no long-lived
+secret to leak. **The form cannot be edited afterwards** — a wrong value means
+deleting the connection and making a new one.
+
+Leaving `npm publish` unchecked is deliberate. The workflow runs
+`npm stage publish`, which puts the version in a staging area instead of the
+public registry, and a person approves it. See below.
 
 ### 5. GitHub Actions has to be allowed
 
@@ -92,8 +107,21 @@ Then watch it:
 gh run watch --repo thoth-id/decant
 ```
 
-The workflow typechecks, publishes to npm, and opens the GitHub Release with
-notes generated from the commits since the previous tag.
+The workflow typechecks, **stages** the version on npm, and opens the GitHub
+Release with notes generated from the commits since the previous tag.
+
+Staged is not published. Nobody can install it until you approve:
+
+```bash
+npm stage list                 # find the stage id
+npm stage view <stage-id>      # what would go public
+npm stage approve <stage-id>   # publish it
+npm stage reject <stage-id>    # throw it away, the version stays free
+```
+
+That last line is the reason for staging. **An npm version can never be
+replaced** — publishing straight from CI means a wrong tag burns that number
+forever. Staged, a bad build is rejected and the number stays available.
 
 ### Before bumping
 
