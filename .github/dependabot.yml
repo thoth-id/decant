@@ -1,0 +1,12 @@
+version: 2
+
+updates:
+  # Actions are pinned by commit SHA so a moved tag cannot swap the code running
+  # in a job that publishes to npm. Dependabot is the other half of that: without
+  # it the pins go stale and security fixes to the actions never arrive.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
