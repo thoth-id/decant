@@ -235,7 +235,7 @@ export async function runAnalysis(
   announce(`${spec.label} will write ${rel}/NOTES.md`);
   console.log();
 
-  await runAgent(spec, rel);
+  await runAgent(spec, vaultDir);
 
   if (await notesExists(vaultDir)) {
     console.log(`\n\x1b[32mNOTES.md written\x1b[0m — \x1b[1m${rel}/NOTES.md\x1b[0m\n`);
