@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { existsSync } from "node:fs";
-import { mkdir, rename, rm } from "node:fs/promises";
+import { mkdir, rename, rm, rmdir } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { ingest, isUrl, slugify, type CookieSource } from "./lib/ingest.ts";
 import { ensureModel, extractAudio, transcribe, MODELS, type ModelName } from "./lib/transcribe.ts";
@@ -8,8 +8,8 @@ import { extractFrames, DEFAULT_FRAME_OPTIONS, type FrameOptions } from "./lib/f
 import { writeBrief } from "./lib/brief.ts";
 import { stamp } from "./lib/time.ts";
 import {
-  CMD, displayPath, fail, header, helpOrExit, openInBrowser, parseOptions, renderToFile,
-  WORK_DIR, reportFailure, requireBinaries, runAnalysis, VAULTS_DIR,
+  CMD, displayPath, ensureVaultsDir, fail, header, helpOrExit, openInBrowser, parseOptions, renderToFile,
+  WORK_DIR, reportFailure, requireBinaries, runAnalysis, vaultsDir,
 } from "./lib/cli.ts";
 import { installed, parseAgentFlag, validateAgentId } from "./lib/agents.ts";
 
@@ -68,6 +68,9 @@ AUTOMATIC ANALYSIS
   --gemini          analyse with Gemini CLI
   --agent <name>    claude | codex | gemini | auto (first one installed)
   --view            renders the NOTES.md and opens it in the browser at the end
+
+ENVIRONMENT
+  DECANT_VAULTS     absolute path for the vaults          (default: ./vaults)
 
 EXAMPLES
   ${CMD} ./aula-01.mp4
@@ -173,11 +176,14 @@ async function main() {
   header();
   requireBinaries("ffmpeg", "ffprobe", "whisper-cli", ...(isUrl(args.input) ? ["yt-dlp"] : []));
 
-  const staging = join(VAULTS_DIR, ".staging");
+  const vaults = vaultsDir();
+  const staging = join(vaults, ".staging");
 
   // Declared out here so the finally can wipe it. It holds the extracted audio,
   // which is the largest thing this ever writes.
   let workDir = "";
+  // Whether this run created the vaults directory, so a failure can take it back.
+  let createdVaults = false;
 
   /**
    * Decides the destination vault and refuses to collide with an existing one.
@@ -188,7 +194,7 @@ async function main() {
    * producing that inconsistent vault, we stop and leave the choice explicit.
    */
   const claimVault = (title: string): string => {
-    const dir = join(VAULTS_DIR, slugify(args.name ?? title));
+    const dir = join(vaults, slugify(args.name ?? title));
     if (existsSync(dir) && !args.force) {
       const rel = displayPath(dir, WORK_DIR);
       throw new Error(
@@ -206,6 +212,8 @@ async function main() {
     // With --name the destination is already known: refuse before downloading anything.
     if (args.name) claimVault(args.name);
 
+    createdVaults = await ensureVaultsDir(vaults);
+    if (createdVaults) log(`created the vaults directory: ${displayPath(vaults, WORK_DIR)}`);
     await rm(staging, { recursive: true, force: true });
     await mkdir(staging, { recursive: true });
 
@@ -276,6 +284,9 @@ Or make it automatic next time: ${flags}
     // vault that then refused to be rebuilt without --force.
     await rm(staging, { recursive: true, force: true });
     if (workDir) await rm(workDir, { recursive: true, force: true });
+    // Created by this run: a failure before any vault landed in it would leave
+    // it behind empty. rmdir refuses a directory that holds anything.
+    if (createdVaults) await rmdir(vaults).catch(() => { /* not empty: keep it */ });
   }
 }
 
