@@ -6,6 +6,28 @@ Notable changes to this project. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `DECANT_VAULTS` pins the vaults to one directory, so they stop landing in
+  whatever directory the command ran from. It has to be an absolute path — a
+  leading `~` is expanded even when the shell left it quoted — and only its
+  last level is created: a missing parent stops the run instead of building a
+  tree where nobody will look for the vaults.
+- `view`, `analyze` and `credits` take a vault's name as well as its path,
+  looking the name up in the vaults directory: `decant view aula-01`.
+
+### Changed
+
+- The analysis agent runs inside the vault instead of the directory the
+  command ran from, and the prompt names the vault's files relative to it.
+  Every agent may only write where it runs, so a vault outside that directory
+  was out of its reach.
+
+### Fixed
+
+- A run that fails before producing a vault no longer leaves an empty
+  `vaults/` behind in the directory it ran from.
+
 ## [0.2.0] — 2026-09-10
 
 ### Added
