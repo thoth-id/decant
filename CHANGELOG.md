@@ -20,6 +20,12 @@ Notable changes to this project. The format follows
   A bot check now says what it is and names the flag that solves it, instead of
   sending you to look for a local copy of a video you can simply sign in to
   watch.
+- The analysis is told not to reproduce song lyrics, poems or other third-party
+  texts a lesson quotes. The prompt asks for what is on screen to be transcribed
+  faithfully, and on a lesson that played a song Claude did exactly that to the
+  lyrics — the output got blocked and the run died with
+  `Output blocked by content filtering policy`. It now names the work and
+  quotes one short line at most.
 
 ## [0.1.0] — 2026-09-03
 

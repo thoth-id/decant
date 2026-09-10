@@ -1,5 +1,5 @@
-import { basename, join } from "node:path";
-import { has, run } from "./shell.ts";
+import { basename, join } from "node:path"
+import { has, run } from "./shell.ts"
 
 export interface AgentSpec {
   id: string;
@@ -110,6 +110,7 @@ function buildPrompt(vaultRel: string): string {
     `Discard greetings, requests for likes and subscriptions, digressions, repetitions and speech corrections.`,
     `Do not pad. A 10-minute lesson that teaches three things becomes a short document — that is success, not failure.`,
     `Do not invent. If something was inaudible or ambiguous, write \`_[inaudivel ~12:30]_\` instead of guessing.`,
+    `Do not reproduce song lyrics, poems or other third-party texts the lesson quotes, not even when they are on screen: name the work, quote one short line at most and explain the point in your own words.`,
     `If the video is not didactic — nothing is being taught — say so instead of forcing a course document out of it.`,
     ``,
     `CREDITS — mandatory:`,

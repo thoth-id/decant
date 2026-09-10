@@ -106,6 +106,11 @@ make didactic sense — it is the structure the work itself declared.
   document — that is success, not failure.
 - If the video is not didactic (there is nothing being taught), say so instead of
   forcing a course document out of it.
+- Do not reproduce song lyrics, poems or other third-party texts the lesson
+  quotes, not even when they are on screen: name the work, quote one short line
+  at most and explain the point in your own words. Those texts belong to someone
+  other than the teacher, and reciting them gets Claude's output blocked — the
+  whole analysis fails with `Output blocked by content filtering policy`.
 
 ## Structure of a vault
 
