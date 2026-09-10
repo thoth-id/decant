@@ -15,6 +15,8 @@ export interface RunOptions {
   onStderr?: (line: string) => void;
   /** Echo stdout/stderr straight to the terminal instead of capturing them. */
   inherit?: boolean;
+  /** Directory the process runs in. Defaults to the current one. */
+  cwd?: string;
 }
 
 /**
@@ -27,6 +29,7 @@ export interface RunOptions {
 export function runBinary(cmd: string, args: string[], opts: RunOptions = {}): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const child = spawn(cmd, args, {
+      cwd: opts.cwd,
       stdio: opts.inherit ? "inherit" : ["ignore", "pipe", "pipe"],
     });
 

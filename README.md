@@ -214,9 +214,9 @@ version or with another account setup, but **it was not validated here**. Prefer
 `--claude` until it is confirmed.
 
 Each one runs **under that CLI's own subscription** — no API key is involved
-here, and nothing is billed per token. All of them are invoked non-interactively
-with permission to write files in the working directory, and nothing beyond that
-(`acceptEdits` on Claude, `workspace-write` on Codex, `auto_edit` on Gemini).
+here, and nothing is billed per token. All of them are invoked non-interactively,
+from inside the vault, with permission to write files there and nothing beyond
+that (`acceptEdits` on Claude, `workspace-write` on Codex, `auto_edit` on Gemini).
 
 To rewrite the `NOTES.md` of an existing vault without reprocessing the video:
 
@@ -246,7 +246,8 @@ and followed the instructions all the way to the credits and materials sections.
 
 The essentials are also repeated in the prompt itself, so it works even when the
 CLI does not load a convention file — the Gemini case, whose `contextFileName`
-was checked against the schema but not validated in a run.
+was checked against the schema but not validated in a run — or when there is
+none to load, because the vault lives outside the repository.
 
 ## Credits for the original work
 

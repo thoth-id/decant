@@ -87,17 +87,18 @@ export function resolve(id: string): AgentSpec {
  * run it. AGENTS.md still carries the long form, for work inside a clone, and
  * the agents that find it get the fuller version.
  *
+ * The agent runs inside the vault, so every path named here is relative to it.
+ *
  * The NOTES.md itself is written in Brazilian Portuguese: it is the deliverable
  * the reader studies from, not part of the codebase.
  */
-function buildPrompt(vaultRel: string): string {
-  const slug = basename(vaultRel);
+function buildPrompt(slug: string): string {
   return [
-    `Write a study document from the vault \`${vaultRel}\`.`,
+    `Write a study document from the vault \`${slug}\`, which is the current directory.`,
     `If an AGENTS.md is present, its "Writing the NOTES.md" section applies in full; everything essential is repeated below either way.`,
     ``,
-    `Inputs: \`${vaultRel}/BRIEF.md\`, \`${vaultRel}/transcript.md\`, \`${vaultRel}/meta.json\` and the images in \`${vaultRel}/frames/\`.`,
-    `Output: write \`${vaultRel}/NOTES.md\`.`,
+    `Inputs: \`BRIEF.md\`, \`transcript.md\`, \`meta.json\` and the images in \`frames/\`.`,
+    `Output: write \`NOTES.md\`.`,
     ``,
     `The goal is NOT to transcribe — the transcript already exists and is only raw input.`,
     `Extract teachings, practical tips, code examples, common mistakes and pitfalls.`,
@@ -114,7 +115,7 @@ function buildPrompt(vaultRel: string): string {
     `If the video is not didactic — nothing is being taught — say so instead of forcing a course document out of it.`,
     ``,
     `CREDITS — mandatory:`,
-    `1. Read \`${vaultRel}/CREDITS.md\`. End the NOTES.md with a "## Creditos" section`,
+    `1. Read \`CREDITS.md\`. End the NOTES.md with a "## Creditos" section`,
     `   naming the author/channel and linking to the original work.`,
     `2. While analysing, note who is credited in the lesson itself: the name of the`,
     `   teacher or presenter said out loud, names shown on screen (opening, footer,`,
@@ -124,7 +125,7 @@ function buildPrompt(vaultRel: string): string {
     `3. Do not invent any name. If there is no mention, write that there was none.`,
     ``,
     `SUPPORTING MATERIALS:`,
-    `4. Read \`${vaultRel}/RESOURCES.md\`. If there is useful material, add a`,
+    `4. Read \`RESOURCES.md\`. If there is useful material, add a`,
     `   "## Materiais complementares" section to the NOTES.md with the links that help studying.`,
     `5. Note what only appears in the content: a URL shown on screen, an address said`,
     `   out loud, a recommended book or article, a tool, an install command,`,
@@ -150,9 +151,13 @@ export function validateAgentId(id: string): string | null {
   return id === "auto" || id in AGENTS ? null : unknownAgent(id);
 }
 
-/** Runs the agent over the vault, with its output echoed straight to the terminal. */
-export async function runAgent(spec: AgentSpec, vaultRel: string): Promise<void> {
-  await run(spec.bin, spec.args(buildPrompt(vaultRel)), { inherit: true });
+/**
+ * Runs the agent inside the vault, with its output echoed straight to the
+ * terminal. Every agent may only write where it runs, so started anywhere else
+ * it could not reach a vault that does not sit below that directory.
+ */
+export async function runAgent(spec: AgentSpec, vaultDir: string): Promise<void> {
+  await run(spec.bin, spec.args(buildPrompt(basename(vaultDir))), { inherit: true, cwd: vaultDir });
 }
 
 /** Whether the agent delivered the NOTES.md. */
