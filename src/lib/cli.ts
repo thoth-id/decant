@@ -7,6 +7,13 @@ import { basename, dirname, isAbsolute, join, relative, resolve as resolvePath }
 import { notesExists, resolve as resolveAgent, runAgent } from "./agents.ts";
 import { renderPage } from "./page.ts";
 import { has, run } from "./shell.ts";
+import pkg from "../../package.json" with { type: "json" };
+
+/**
+ * The version of this copy of decant, read from package.json rather than kept
+ * here: `npm version` bumps that file, and a copy would drift from it.
+ */
+export const VERSION = pkg.version;
 
 /**
  * How to spell this command back to the user. Installed from npm the package
@@ -103,12 +110,20 @@ ${CYAN}   │▓▓▓▓▓▓▓▓▓▓▓│     ╚═════╝ ╚�
 ${CYAN}   ╰───────────╯${RESET}     ${DIM}video lessons, distilled into study documents${RESET}
 `;
 
-/** With no arguments, or with -h/--help, prints the help and exits. */
+/**
+ * With no arguments, or with -h/--help, prints the help and exits; with
+ * -v/--version, prints the version and exits. The version is the package's,
+ * so every subcommand answers it the same way.
+ */
 export function helpOrExit(argv: string[], help: string): void {
   if (argv.length === 0 || argv.includes("-h") || argv.includes("--help")) {
     if (process.stdout.isTTY) console.log(BANNER);
     console.log(help);
     process.exit(argv.length === 0 ? 1 : 0);
+  }
+  if (argv.includes("-v") || argv.includes("--version")) {
+    console.log(`decant ${VERSION}`);
+    process.exit(0);
   }
 }
 
