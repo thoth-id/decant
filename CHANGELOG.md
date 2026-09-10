@@ -17,6 +17,11 @@ Notable changes to this project. The format follows
   looking the name up in the vaults directory: `decant view lesson-01`.
 - `decant --version` (or `-v`) prints the installed version, read from
   `package.json`, and the help names it on its first line.
+- `decant serve` puts the vaults up as a site: the list of vaults, newest
+  first, and each one's documents rendered on request, so an edit shows up on
+  reload. Only this machine can reach it unless asked: `--tailscale` adds an
+  HTTPS address on the tailnet, for reading on the phone from any network, and
+  `--lan` opens it to the local network behind a token in the address.
 
 ### Changed
 
