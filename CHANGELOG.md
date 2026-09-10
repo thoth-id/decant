@@ -6,6 +6,8 @@ Notable changes to this project. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-09-10
+
 ### Added
 
 - `--cookies-from-browser <name>` and `--cookies <file>`, passed through to
@@ -20,6 +22,10 @@ Notable changes to this project. The format follows
   A bot check now says what it is and names the flag that solves it, instead of
   sending you to look for a local copy of a video you can simply sign in to
   watch.
+- An interrupted or failed run no longer leaves the extracted audio behind. The
+  `.work` directory — 26MB for a 15-minute lesson — was removed only when the
+  run succeeded, and the half-built vault it sat in then refused to rebuild
+  without `--force`.
 - The analysis is told not to reproduce song lyrics, poems or other third-party
   texts a lesson quotes. The prompt asks for what is on screen to be transcribed
   faithfully, and on a lesson that played a song Claude did exactly that to the
@@ -59,5 +65,6 @@ Bun 1.2+, and `ffmpeg`, `whisper-cli` and `yt-dlp` on the PATH
 (`brew install ffmpeg whisper-cpp yt-dlp`). Vaults are written to a `vaults/`
 directory under wherever the command is run.
 
-[Unreleased]: https://github.com/thoth-id/decant/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/thoth-id/decant/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/thoth-id/decant/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/thoth-id/decant/releases/tag/v0.1.0
