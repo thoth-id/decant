@@ -9,7 +9,7 @@ import { writeBrief } from "./lib/brief.ts";
 import { stamp } from "./lib/time.ts";
 import {
   CMD, displayPath, ensureVaultsDir, fail, header, helpOrExit, openInBrowser, parseOptions, renderToFile,
-  WORK_DIR, reportFailure, requireBinaries, runAnalysis, vaultsDir,
+  VERSION, WORK_DIR, reportFailure, requireBinaries, runAnalysis, vaultsDir,
 } from "./lib/cli.ts";
 import { installed, parseAgentFlag, validateAgentId } from "./lib/agents.ts";
 
@@ -28,7 +28,7 @@ const subcommand = SUBCOMMANDS[process.argv[2] ?? ""];
 if (subcommand) process.argv.splice(2, 1);
 
 const HELP = `
-decant — turns video lessons into study material
+decant ${VERSION} — turns video lessons into study material
 
 USAGE
   ${CMD} <url-or-file> [options]
@@ -57,6 +57,7 @@ OPTIONS
                     that asks who is asking (YouTube's bot check)
   --cookies <file>  same, from a cookies.txt file
   -h, --help        this help
+  -v, --version     prints the version
 
 AUTOMATIC ANALYSIS
   Without any of these flags, the vault is generated and the analysis is up to you.
