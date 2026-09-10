@@ -6,6 +6,8 @@ Notable changes to this project. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-09-10
+
 ### Added
 
 - `DECANT_VAULTS` pins the vaults to one directory, so they stop landing in
@@ -100,6 +102,7 @@ Bun 1.2+, and `ffmpeg`, `whisper-cli` and `yt-dlp` on the PATH
 (`brew install ffmpeg whisper-cpp yt-dlp`). Vaults are written to a `vaults/`
 directory under wherever the command is run.
 
-[Unreleased]: https://github.com/thoth-id/decant/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/thoth-id/decant/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/thoth-id/decant/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/thoth-id/decant/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/thoth-id/decant/releases/tag/v0.1.0
