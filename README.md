@@ -12,6 +12,7 @@
 
 # decant
 
+[![npm](https://img.shields.io/npm/v/@thoth-dev/decant.svg)](https://www.npmjs.com/package/@thoth-dev/decant)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Bun](https://img.shields.io/badge/bun-%3E%3D1.2-f9f1e1.svg?logo=bun&logoColor=white&labelColor=14151a)](https://bun.sh)
 [![Processing: 100% local](https://img.shields.io/badge/processing-100%25%20local-2ea44f.svg)](#requirements)
