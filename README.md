@@ -319,6 +319,42 @@ To do everything in one go — process, analyse and open:
 bun run decant ./lesson-01.mp4 --claude --view
 ```
 
+## Reading on your phone
+
+A rendered file only opens on the machine that has it. `serve` puts every vault
+up as a small site instead — the list of vaults, and each one's documents
+rendered on request:
+
+```bash
+bun run decant serve               # this machine only: http://127.0.0.1:4242
+bun run decant serve --tailscale   # also on your tailnet, over HTTPS
+bun run decant serve --lan         # also on the local network, behind a token
+```
+
+The list puts the newest vault first, with a thumbnail, the channel, the length
+and a filter; a *novo* tag marks what was generated after that device first
+opened the list and has not been read there yet. A vault still waiting for its
+analysis shows the command that writes it, and one that stopped halfway is
+listed apart. Every document page links back to the list and across the vault's
+notes, resources and credits.
+
+Nothing is written to disk: each page is built from the markdown when it is
+requested, so an edited `NOTES.md` shows up on reload, and the `NOTES.html` that
+`view` writes is left alone.
+
+- **`--tailscale`** gives the site an HTTPS address on your tailnet,
+  `https://<machine>.<tailnet>.ts.net`, reachable from any device on it and from
+  any network — the phone on mobile data included. It needs Tailscale connected
+  and HTTPS certificates turned on for the tailnet. The address lives as long as
+  the command: Ctrl+C takes it down, and nothing stays configured.
+- **`--lan`** also listens on the local network and prints an address carrying a
+  token. Opening it once swaps the token for a cookie; a request with neither is
+  refused.
+
+With `qrencode` installed, the address for the phone also comes out as a QR code
+to scan. Neither flag publishes anything: the vaults hold someone else's lesson,
+and the site answers only your tailnet, or whoever has the token.
+
 ## Options
 
 | Option | Default | What it does |

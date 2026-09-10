@@ -19,7 +19,11 @@ const DARK_TOKENS = String.raw`
   --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
 `;
 
-const CSS = `
+/**
+ * What every page decant draws shares — palette, type, the masthead — so the
+ * list `serve` builds reads as the same site as the documents it opens.
+ */
+export const BASE_CSS = `
 :root {
   --ground:#eef1f4; --surface:#fff; --surface-alt:#e4e9ee;
   --ink:#101c26; --ink-soft:#3d4f5e; --muted:#66798a;
@@ -45,6 +49,21 @@ a{color:var(--teal);text-underline-offset:2px}
 .masthead h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5.2vw,3.2rem);
   line-height:1.04;letter-spacing:-.024em;text-wrap:balance;margin:0 0 14px}
 .source{margin:0;color:var(--ink-soft);font-size:1.05rem;max-width:62ch}
+`;
+
+/** The three typefaces, from Google Fonts. Without them the stacks fall back to the system's. */
+export const FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500&display=swap">`;
+
+const CSS = `
+/* served pages only: back to the list, and across the vault's documents */
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:0 20px;margin:-22px 0 28px;
+        font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.crumbs a{color:var(--muted);text-decoration:none;padding-block:8px}
+.crumbs a:hover{color:var(--ink)}
+.crumbs .home{color:var(--teal);margin-right:auto}
+.crumbs [aria-current]{color:var(--ink);box-shadow:inset 0 -2px var(--amber)}
 
 .readout{display:flex;flex-wrap:wrap;gap:2px;margin-top:30px;border:1px solid var(--rule);
          border-radius:3px;overflow:hidden;background:var(--rule)}
@@ -99,12 +118,21 @@ footer a{color:var(--teal)}
   body{background:#fff}
   .paper{box-shadow:none;border:0;padding-top:0}
   .masthead{padding-block:0 18px}
-  .readout{display:none}
+  .readout,.crumbs{display:none}
   footer{color:#333;border-top:1px solid #ccc;padding-top:12px}
 }
 `;
 
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+/** Escapes text for HTML — quotes too, so the result is safe inside an attribute. */
+export const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+const TITLE_RE = /^#\s+(.+)$/m;
+
+/** A markdown document's first `# heading`: the title its page shows. */
+export function documentTitle(md: string): string | undefined {
+  return md.match(TITLE_RE)?.[1]?.trim() || undefined;
+}
 
 const IMG_SRC_RE = /src="([^"]+\.(?:jpe?g|png|gif|webp))"/gi;
 
@@ -143,17 +171,25 @@ export interface PageInput {
   file: string;
   /** Embeds the images as base64, producing a self-contained HTML file. */
   standalone: boolean;
+  /** Links for a page `serve` hands out; a file written to disk has nowhere to point them. */
+  nav?: PageNav;
+}
+
+/** Where a served page leads: back to the list of vaults, and across this vault's documents. */
+export interface PageNav {
+  home: string;
+  tabs: { label: string; href: string; current: boolean }[];
 }
 
 /** Turns a markdown file from the vault into a complete HTML page. */
-export async function renderPage({ vaultDir, file, standalone }: PageInput): Promise<string> {
+export async function renderPage({ vaultDir, file, standalone, nav }: PageInput): Promise<string> {
   const [md, meta] = await Promise.all([
     readFile(join(vaultDir, file), "utf8"),
     readMeta(vaultDir),
   ]);
 
   // The first <h1> becomes the page header, not part of the document body.
-  const titleMatch = md.match(/^#\s+(.+)$/m);
+  const titleMatch = md.match(TITLE_RE);
   const title = titleMatch?.[1]?.trim() ?? meta?.title ?? basename(vaultDir);
   const body = await marked.parse(titleMatch ? md.replace(titleMatch[0], "") : md);
 
@@ -181,20 +217,23 @@ export async function renderPage({ vaultDir, file, standalone }: PageInput): Pro
   const attribLine = attrib.length ? attrib.join(" · ") : "Confira CREDITS.md para a autoria da obra original.";
   const original = c?.sourceUrl ? `<a href="${esc(c.sourceUrl)}">assista ao original</a>` : "";
 
+  const crumbs = nav
+    ? `<nav class="crumbs"><a class="home" href="${esc(nav.home)}">&larr; Vaults</a>${nav.tabs.map((tab) =>
+        `<a href="${esc(tab.href)}"${tab.current ? ` aria-current="page"` : ""}>${esc(tab.label)}</a>`).join("")}</nav>`
+    : "";
+
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500&display=swap">
-<style>${CSS}</style>
+${FONTS}
+<style>${BASE_CSS}${CSS}</style>
 </head>
 <body>
 <header class="masthead wrap">
-  <p class="kicker">decant</p>
+  ${crumbs}<p class="kicker">decant</p>
   <h1>${esc(title)}</h1>
   <p class="source">Fonte: ${source}</p>
   ${stats ? `<dl class="readout">${stats}</dl>` : ""}
