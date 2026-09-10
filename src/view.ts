@@ -20,9 +20,9 @@ OPTIONS
   -h, --help      this help
 
 EXAMPLES
-  ${CMD} view vaults/minha-aula
-  ${CMD} view minha-aula --file BRIEF.md
-  ${CMD} view minha-aula --standalone   # to send to someone
+  ${CMD} view vaults/my-lesson
+  ${CMD} view my-lesson --file BRIEF.md
+  ${CMD} view my-lesson --standalone   # to send to someone
 `;
 
 const argv = process.argv.slice(2);

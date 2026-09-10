@@ -73,10 +73,10 @@ ENVIRONMENT
   DECANT_VAULTS     absolute path for the vaults          (default: ./vaults)
 
 EXAMPLES
-  ${CMD} ./aula-01.mp4
+  ${CMD} ./lesson-01.mp4
   ${CMD} "https://youtube.com/watch?v=..." --lang pt
-  ${CMD} ./modulo.mp4 --model large --frames 60 --sens 6
-  ${CMD} ./aula.mp4 --claude
+  ${CMD} ./module.mp4 --model large --frames 60 --sens 6
+  ${CMD} ./lesson.mp4 --claude
   ${CMD} "https://youtu.be/..." --agent auto
 
 Sources with DRM or an authenticated session are not supported by design.
@@ -263,7 +263,7 @@ async function main() {
       const flags = installed().map((a) => `--${a.id}`).join(", ") || "no agent installed";
       if (args.view) await openDocument(vaultDir, rel, "BRIEF.md");
       console.log(`Write the NOTES.md by asking Claude Code:
-  \x1b[36manalisa o vault ${rel} e escreve o NOTES.md\x1b[0m
+  \x1b[36manalyse the vault ${rel} and write the NOTES.md\x1b[0m
 
 Or make it automatic next time: ${flags}
 `);

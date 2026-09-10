@@ -14,7 +14,7 @@ Notable changes to this project. The format follows
   last level is created: a missing parent stops the run instead of building a
   tree where nobody will look for the vaults.
 - `view`, `analyze` and `credits` take a vault's name as well as its path,
-  looking the name up in the vaults directory: `decant view aula-01`.
+  looking the name up in the vaults directory: `decant view lesson-01`.
 
 ### Changed
 
@@ -22,6 +22,9 @@ Notable changes to this project. The format follows
   command ran from, and the prompt names the vault's files relative to it.
   Every agent may only write where it runs, so a vault outside that directory
   was out of its reach.
+- The prompt the CLI suggests for asking Claude Code by hand is in English,
+  like the rest of its output, and so are the example names in the help. The
+  documents inside a vault stay in Brazilian Portuguese.
 
 ### Fixed
 
