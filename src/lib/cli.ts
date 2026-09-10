@@ -1,18 +1,13 @@
 /** Plumbing shared by the entrypoints: argv, failure, help, paths and browser. */
 
 import { existsSync } from "node:fs";
-import { writeFile } from "node:fs/promises";
-import { join, relative, resolve as resolvePath } from "node:path";
+import { mkdir, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
+import { dirname, isAbsolute, join, relative, resolve as resolvePath } from "node:path";
 import { notesExists, resolve as resolveAgent, runAgent } from "./agents.ts";
 import { renderPage } from "./page.ts";
 import { has, run } from "./shell.ts";
 
-/**
- * Where vaults are created, and what paths are shown relative to: the directory
- * the command was run from, never where the code lives. Installed globally the
- * package sits inside node_modules — writing vaults there would need root on a
- * global install, and the next update would wipe them.
- */
 /**
  * How to spell this command back to the user. Installed from npm the package
  * sits under node_modules and is reached by its bin name; run from a clone it
@@ -21,10 +16,51 @@ import { has, run } from "./shell.ts";
  */
 export const CMD = import.meta.dir.includes("node_modules") ? "decant" : "bun run decant";
 
+/** The directory the command was run from, which paths are shown relative to. */
 export const WORK_DIR = process.cwd();
 
-/** Where the vaults are created and looked for. */
-export const VAULTS_DIR = join(WORK_DIR, "vaults");
+/**
+ * Where the vaults are created: `vaults/` in the directory the command was run
+ * from, never where the code lives. Installed globally the package sits inside
+ * node_modules — writing vaults there would need root on a global install, and
+ * the next update would wipe them.
+ *
+ * DECANT_VAULTS pins them to one directory instead, so they stop landing
+ * wherever the command happened to run. It has to be absolute: a relative
+ * value would move with the working directory, the very thing it exists to
+ * avoid.
+ */
+export function vaultsDir(): string {
+  const configured = process.env.DECANT_VAULTS;
+  if (!configured) return join(WORK_DIR, "vaults");
+
+  // A quoted "~/..." reaches us unexpanded, and mkdir would take it for a
+  // directory literally named "~" inside the current one.
+  const expanded = configured.replace(/^~(?=$|[\\/])/, () => homedir());
+  if (!isAbsolute(expanded)) fail(`DECANT_VAULTS must be an absolute path, got: ${configured}`);
+  return resolvePath(expanded);
+}
+
+/**
+ * Creates the vaults directory when it is missing, and says whether it did.
+ * Only the last level: a missing parent is far more likely a typo in
+ * DECANT_VAULTS than a tree someone wants built, and building it would file
+ * the vaults where nobody will look for them.
+ */
+export async function ensureVaultsDir(dir: string): Promise<boolean> {
+  try {
+    await mkdir(dir);
+    return true;
+  } catch (err) {
+    const code = (err as { code?: string }).code;
+    if (code === "EEXIST") return false;
+    if (code !== "ENOENT") throw err;
+    throw new Error(
+      `cannot create ${dir}: ${dirname(dir)} does not exist\n\n` +
+      `Check DECANT_VAULTS, or create that directory first.`,
+    );
+  }
+}
 
 /**
  * The logo at the top of a run. Goes to stderr, beside the progress log, so a
