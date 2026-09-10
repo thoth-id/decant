@@ -129,7 +129,7 @@ async function fromUrl(
         : `could not read that URL.\n\n` +
           `Paid course platforms usually rely on DRM or require an authenticated session, and this tool ` +
           `works around neither. In that case, use a local file you have the right to access:\n` +
-          `  ${CMD} ./aula.mp4\n\nTechnical detail: ${firstLine(err)}`,
+          `  ${CMD} ./lesson.mp4\n\nTechnical detail: ${firstLine(err)}`,
     );
   }
 

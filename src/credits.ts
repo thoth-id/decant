@@ -19,8 +19,8 @@ already in meta.json.
 <vault> is a path, or the name of a vault in the vaults directory.
 
 EXAMPLES
-  ${CMD} credits vaults/minha-aula
-  ${CMD} credits minha-aula --offline
+  ${CMD} credits vaults/my-lesson
+  ${CMD} credits my-lesson --offline
 `;
 
 const argv = process.argv.slice(2);

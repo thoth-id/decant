@@ -213,7 +213,7 @@ export function parseOptions(
 
 /**
  * Finds a vault from what the user typed: a path, taken as given, or else the
- * name of a vault in the vaults directory — so `view aula-01` works from
+ * name of a vault in the vaults directory — so `view lesson-01` works from
  * anywhere once DECANT_VAULTS is set. A path that does not exist is not
  * retried as a name; only a bare name is.
  */

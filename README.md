@@ -161,13 +161,13 @@ One command with four jobs:
 
 ```bash
 # local file
-bun run decant ./aula-01.mp4
+bun run decant ./lesson-01.mp4
 
 # public platform
 bun run decant "https://www.youtube.com/watch?v=..."
 
 # long lesson, more captures, more sensitive to slide changes
-bun run decant ./modulo.mp4 --model large --frames 60 --sens 6
+bun run decant ./module.mp4 --model large --frames 60 --sens 6
 ```
 
 **YouTube may answer with a bot check** — `Sign in to confirm you're not a bot`
@@ -188,13 +188,13 @@ place to do it, not the one your email lives in.
 Then comes the analysis. Either you ask for it in Claude Code:
 
 ```
-analisa o vault vaults/aula-01 e escreve o NOTES.md
+analyse the vault vaults/lesson-01 and write the NOTES.md
 ```
 
 Or you make it automatic with a flag:
 
 ```bash
-bun run decant ./aula-01.mp4 --claude    # calls the agent at the end and writes the NOTES.md
+bun run decant ./lesson-01.mp4 --claude    # calls the agent at the end and writes the NOTES.md
 ```
 
 ## Automatic analysis
@@ -221,8 +221,8 @@ that (`acceptEdits` on Claude, `workspace-write` on Codex, `auto_edit` on Gemini
 To rewrite the `NOTES.md` of an existing vault without reprocessing the video:
 
 ```bash
-bun run decant analyze vaults/aula-01 --claude
-bun run decant analyze vaults/aula-01 --gemini   # same vault, different agent
+bun run decant analyze vaults/lesson-01 --claude
+bun run decant analyze vaults/lesson-01 --gemini   # same vault, different agent
 ```
 
 ### Instructions: a single file
@@ -284,8 +284,8 @@ name and the timestamp instead of guessing the address.
 For older vaults, or when the video description has changed:
 
 ```bash
-bun run decant credits vaults/aula-01            # re-queries the source (no video download)
-bun run decant credits vaults/aula-01 --offline  # only with what is already in meta.json
+bun run decant credits vaults/lesson-01            # re-queries the source (no video download)
+bun run decant credits vaults/lesson-01 --offline  # only with what is already in meta.json
 ```
 
 A local video file has no platform metadata: in that case `CREDITS.md` comes out
@@ -297,9 +297,9 @@ The `NOTES.md` is markdown with screenshots and timestamps — good in the edito
 better in the browser:
 
 ```bash
-bun run decant view vaults/aula-01               # renders and opens
-bun run decant view vaults/aula-01 --standalone  # single file, to send to someone
-bun run decant view vaults/aula-01 --file BRIEF.md
+bun run decant view vaults/lesson-01               # renders and opens
+bun run decant view vaults/lesson-01 --standalone  # single file, to send to someone
+bun run decant view vaults/lesson-01 --file BRIEF.md
 ```
 
 Without `--standalone` the HTML stays around ~15KB and points at `frames/` next
@@ -315,7 +315,7 @@ system stack and stays perfectly readable.
 To do everything in one go — process, analyse and open:
 
 ```bash
-bun run decant ./aula-01.mp4 --claude --view
+bun run decant ./lesson-01.mp4 --claude --view
 ```
 
 ## Options
@@ -375,7 +375,7 @@ that exists is used as given; a bare name is looked up in the vaults directory,
 so with the variable set it works from anywhere:
 
 ```bash
-bun run decant view aula-01
+bun run decant view lesson-01
 ```
 
 A mistake in that path fails loudly instead of filing vaults where nobody will
@@ -405,17 +405,17 @@ If you want to keep your own notes (and only those, without transcript or
 captures), carve out an exception in `.gitignore`:
 
 ```gitignore
-!vaults/meu-curso/
-vaults/meu-curso/*
-!vaults/meu-curso/NOTES.md
-!vaults/meu-curso/CREDITS.md
+!vaults/my-course/
+vaults/my-course/*
+!vaults/my-course/NOTES.md
+!vaults/my-course/CREDITS.md
 ```
 
 To share a document with the captures embedded, generate the single file instead
 of versioning them:
 
 ```bash
-bun run decant view vaults/aula-01 --standalone
+bun run decant view vaults/lesson-01 --standalone
 ```
 
 ## How it works
