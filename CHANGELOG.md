@@ -25,6 +25,9 @@ Notable changes to this project. The format follows
 - The prompt the CLI suggests for asking Claude Code by hand is in English,
   like the rest of its output, and so are the example names in the help. The
   documents inside a vault stay in Brazilian Portuguese.
+- A link to a YouTube channel counts as social under any of its addresses,
+  including the old `youtube.com/<name>` form, instead of only the prefixed
+  forms plus one channel singled out by name.
 
 ### Fixed
 

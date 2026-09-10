@@ -256,7 +256,7 @@ from three sources:
 
 1. **Platform metadata** — author, channel, publication date and license
 2. **Video description** — links preserving the label that introduces them, so
-   that "Patrocinio — HOSTNET" does not become a bare domain
+   that a link listed under "Sponsor" does not become a bare domain
 3. **The lesson itself** — during the analysis, the agent notes the teacher's
    name said out loud, the names shown on screen and the sources cited
 
@@ -266,15 +266,15 @@ the attribution in the footer — including when printed to PDF.
 ## Supporting materials
 
 `RESOURCES.md` separates what serves the study from what is merely a credit: the
-channel's Facebook link goes to the credits, the exercises repository goes to the
-materials. Links from the description come in grouped by type — **course**,
+channel's social media links go to the credits, the exercises repository goes to
+the materials. Links from the description come in grouped by type — **course**,
 **code**, **download**, **documentation**, **community** — along with the
 **chapters** the platform declares, each with a link to the moment.
 
-In the Curso em Video lesson, for example, the link to the certified course went
-to the materials, while social networks and sponsorship stayed in the credits. In
-another video, extraction recovered MDN and the Stack Overflow survey cited in
-the opening.
+In one lesson, for example, the link to the certified course went to the
+materials, while social networks and sponsorship stayed in the credits. In
+another, the extraction recovered the reference documentation and a developer
+survey cited in the opening.
 
 During the analysis, the agent fills in the "Citados na aula" section with what
 only appears in the content: a URL shown on screen, an address said out loud, a
