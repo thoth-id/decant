@@ -1,6 +1,6 @@
 {
   "name": "@thoth-dev/decant",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Turns video lessons into study documents: transcribes locally, captures the essential frames and assembles a package ready for AI analysis.",
   "keywords": [
     "cli",
