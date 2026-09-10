@@ -49,8 +49,8 @@ const trimLabel = (raw: string) => raw.replace(/^[^\p{L}\p{N}]+/u, "").trim();
 
 /**
  * Extracts links from the description, preserving the label that introduces
- * them. Common shapes: "Site: http://…", "HOSTNET: http://…", or a section
- * heading ("Patrocinio") followed by its links.
+ * them. Common shapes: "Site: http://…", "Course: http://…", or a section
+ * heading ("Sponsor") followed by its links.
  */
 export function linksFromDescription(description: string): CreditLink[] {
   const out: CreditLink[] = [];

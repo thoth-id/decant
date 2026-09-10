@@ -1,9 +1,9 @@
 /**
  * Supporting materials and classification of the links found in the description.
  *
- * Not every link plays the same role: the channel's Facebook page is a credit,
- * the exercises repository is study material. Telling them apart keeps the
- * materials section from turning into a list of social networks.
+ * Not every link plays the same role: the channel's social media page is a
+ * credit, the exercises repository is study material. Telling them apart keeps
+ * the materials section from turning into a list of social networks.
  */
 
 import { deepLink, stamp } from "./time.ts";
@@ -13,7 +13,7 @@ export type LinkKind =
   | "community" | "social" | "sponsor" | "other";
 
 export interface ClassifiedLink {
-  /** Label read from the description ("Site", "Patrocinio — HOSTNET") or the domain. */
+  /** Label read from the description ("Site", "Sponsor — example.com") or the domain. */
   label: string;
   url: string;
   kind: LinkKind;
@@ -30,7 +30,9 @@ export interface Chapter {
 const RULES: { kind: LinkKind; host?: RegExp; path?: RegExp; label?: RegExp }[] = [
   { kind: "sponsor", label: /patroc|sponsor|apoi[oa]|parceir|oferecim|assinante|assine|seja membro|apoie/i },
   { kind: "social", host: /(^|\.)(facebook|instagram|twitter|x|tiktok|linkedin|threads|bsky|plus\.google)\./i },
-  { kind: "social", host: /(^|\.)youtube\.com$/i, path: /^\/(@|c\/|user\/|channel\/|cursosemvideo)/i },
+  // A YouTube page that is not a video, playlist or search belongs to a channel,
+  // including the old youtube.com/<name> addresses that carry no fixed prefix.
+  { kind: "social", host: /(^|\.)youtube\.com$/i, path: /^\/(?!(watch|playlist|shorts|live|embed|results|redirect|feed|hashtag|post|clip|v|e)(\/|$))[^/]/i },
   { kind: "code", host: /(^|\.)(github|gitlab|bitbucket|codeberg|codepen|replit|codesandbox|stackblitz)\./i },
   { kind: "download", host: /(^|\.)(drive\.google|dropbox|mega|mediafire|1drv|wetransfer)\./i },
   { kind: "download", path: /\.(pdf|zip|rar|7z|tar\.gz|docx?|pptx?|xlsx?)$|\/download/i },
