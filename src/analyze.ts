@@ -13,9 +13,11 @@ USAGE
 Reuses the transcript and the frames that already exist: no video is
 reprocessed. Useful to rewrite the NOTES.md or to compare agents.
 
+<vault> is a path, or the name of a vault in the vaults directory.
+
 EXAMPLES
   ${CMD} analyze vaults/minha-aula --claude
-  ${CMD} analyze vaults/minha-aula --gemini
+  ${CMD} analyze minha-aula --gemini
 `;
 
 const argv = process.argv.slice(2);

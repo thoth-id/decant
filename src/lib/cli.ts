@@ -3,7 +3,7 @@
 import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
-import { dirname, isAbsolute, join, relative, resolve as resolvePath } from "node:path";
+import { basename, dirname, isAbsolute, join, relative, resolve as resolvePath } from "node:path";
 import { notesExists, resolve as resolveAgent, runAgent } from "./agents.ts";
 import { renderPage } from "./page.ts";
 import { has, run } from "./shell.ts";
@@ -20,10 +20,11 @@ export const CMD = import.meta.dir.includes("node_modules") ? "decant" : "bun ru
 export const WORK_DIR = process.cwd();
 
 /**
- * Where the vaults are created: `vaults/` in the directory the command was run
- * from, never where the code lives. Installed globally the package sits inside
- * node_modules — writing vaults there would need root on a global install, and
- * the next update would wipe them.
+ * Where the vaults are created, and where a vault given by name is looked for:
+ * `vaults/` in the directory the command was run from, never where the code
+ * lives. Installed globally the package sits inside node_modules — writing
+ * vaults there would need root on a global install, and the next update would
+ * wipe them.
  *
  * DECANT_VAULTS pins them to one directory instead, so they stop landing
  * wherever the command happened to run. It has to be absolute: a relative
@@ -211,13 +212,28 @@ export function parseOptions(
 }
 
 /**
- * Resolves the given path into an absolute vault directory, requiring the file
- * that the command actually needs. `hint` tells the user how to produce what is
- * missing.
+ * Finds a vault from what the user typed: a path, taken as given, or else the
+ * name of a vault in the vaults directory — so `view aula-01` works from
+ * anywhere once DECANT_VAULTS is set. A path that does not exist is not
+ * retried as a name; only a bare name is.
+ */
+export function findVault(input: string): string {
+  const given = resolvePath(input);
+  if (existsSync(given)) return given;
+  if (basename(input) !== input) fail(`vault not found: ${given}`);
+
+  const named = join(vaultsDir(), input);
+  if (!existsSync(named)) fail(`vault not found: ${input}\n\nLooked in:\n  ${given}\n  ${named}`);
+  return named;
+}
+
+/**
+ * Resolves the given path or name into an absolute vault directory, requiring
+ * the file that the command actually needs. `hint` tells the user how to
+ * produce what is missing.
  */
 export function resolveVault(input: string, requiredFile: string, hint = ""): string {
-  const dir = resolvePath(input);
-  if (!existsSync(dir)) fail(`vault not found: ${dir}`);
+  const dir = findVault(input);
   if (!existsSync(join(dir, requiredFile))) {
     fail(`\`${requiredFile}\` does not exist in ${input}${hint ? `\n\n${hint}` : ""}`);
   }

@@ -16,9 +16,11 @@ Queries the source platform to recover authorship, date, license and the links
 in the description. Does not download video. With --offline, uses only what is
 already in meta.json.
 
+<vault> is a path, or the name of a vault in the vaults directory.
+
 EXAMPLES
   ${CMD} credits vaults/minha-aula
-  ${CMD} credits vaults/minha-aula --offline
+  ${CMD} credits minha-aula --offline
 `;
 
 const argv = process.argv.slice(2);

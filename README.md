@@ -370,6 +370,14 @@ The vaults then land there wherever you run the command. Inside a clone this
 also keeps them away from `git clean -fdX`, which deletes everything the
 repository ignores — `vaults/` included.
 
+`view`, `analyze` and `credits` take a vault's name as well as its path. A path
+that exists is used as given; a bare name is looked up in the vaults directory,
+so with the variable set it works from anywhere:
+
+```bash
+bun run decant view aula-01
+```
+
 A mistake in that path fails loudly instead of filing vaults where nobody will
 look for them:
 
