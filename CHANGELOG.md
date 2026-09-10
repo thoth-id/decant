@@ -15,6 +15,8 @@ Notable changes to this project. The format follows
   tree where nobody will look for the vaults.
 - `view`, `analyze` and `credits` take a vault's name as well as its path,
   looking the name up in the vaults directory: `decant view lesson-01`.
+- `decant --version` (or `-v`) prints the installed version, read from
+  `package.json`, and the help names it on its first line.
 
 ### Changed
 
