@@ -22,6 +22,7 @@ const SUBCOMMANDS: Record<string, string> = {
   view: "./view.ts",
   analyze: "./analyze.ts",
   credits: "./credits.ts",
+  serve: "./serve.ts",
 };
 
 const subcommand = SUBCOMMANDS[process.argv[2] ?? ""];
@@ -38,6 +39,7 @@ COMMANDS
   ${CMD} view <vault>      render a document and open it in the browser
   ${CMD} analyze <vault>   rewrite the NOTES.md without reprocessing the video
   ${CMD} credits <vault>   rebuild CREDITS.md and RESOURCES.md from the source
+  ${CMD} serve             serve every vault as a site, to read on the phone
 
   Each takes -h for its own options.
 
